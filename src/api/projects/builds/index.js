@@ -1,4 +1,5 @@
 const router = require("express").Router({ mergeParams: true });
+const { store } = require("../../../redux");
 
 router.get("/", (req, res) => {
   const { projectId } = req.params;
