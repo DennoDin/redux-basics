@@ -13,6 +13,11 @@ const patchProject = (projectId, project) => ({
   projectId,
 });
 
+const deleteProject = (projectId) => ({
+  type: "DELETE_PROJECT",
+  projectId,
+});
+
 const reducer = (state = initial, action) => {
   switch (action.type) {
     case "CREATE_PROJECT": {
@@ -27,6 +32,15 @@ const reducer = (state = initial, action) => {
       });
       return clone;
     }
+    case "DELETE_PROJECT": {
+      const clone = [];
+      state.forEach((object) => {
+        if (object.id !== action.projectId) {
+          clone.push(object);
+        }
+      });
+      return clone;
+    }
   }
   return state;
 };
@@ -37,4 +51,5 @@ module.exports = {
   store,
   createProject,
   patchProject,
+  deleteProject,
 };
