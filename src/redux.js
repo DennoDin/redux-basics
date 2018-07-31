@@ -1,6 +1,6 @@
 const redux = require("redux");
 
-const initial = ["hello"];
+const initial = [];
 
 const createProject = (project) => ({
   type: "CREATE_PROJECT",
@@ -9,12 +9,11 @@ const createProject = (project) => ({
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
-    case "CREATE_PROJECT":
-      {
-        const clone = [...state, action.project];
-        console.log(action);
-        return clone;
-      }
+    case "CREATE_PROJECT": {
+      const clone = [...state, action.project];
+      console.log(action);
+      return clone;
+    }
   }
   return state;
 };
