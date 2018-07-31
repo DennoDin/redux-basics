@@ -32,6 +32,20 @@ const addBuild = (projectId, build) => ({
   build,
 });
 
+const runBuild = (projectId, buildNumber) => ({
+  type: "RUN_BUILD",
+  projectId,
+  buildNumber,
+});
+
+const endBuild = (projectId, buildNumber, buildStatus, output) => ({
+  type: "FINISH_BUILD",
+  projectId,
+  buildNumber,
+  buildStatus,
+  output,
+});
+
 /////////////////////
 ///    REDUCER    ///
 /////////////////////
@@ -69,6 +83,33 @@ const reducer = (state = initial, action) => {
       });
       return storeClone;
     }
+    case "RUN_BUILD": {
+      const clone = [...state];
+      clone.forEach((project) => {
+        if (project.id === action.projectId) {
+          project.build.forEach((build) => {
+            if (build.buildNumber === action.buildNumber) {
+              build.status = "running";
+            }
+          });
+        }
+      });
+      return clone;
+    }
+    case "FINISH_BUILD": {
+      const clone = [...state];
+      clone.forEach((project) => {
+        if (project.id === action.projectId) {
+          project.build.forEach((build) => {
+            if (build.buildNumber === action.buildNumber) {
+              build.status = action.buildStatus;
+              build.output = action.output;
+            }
+          });
+        }
+      });
+      return clone;
+    }
   }
   return state;
 };
@@ -81,4 +122,6 @@ module.exports = {
   patchProject,
   deleteProject,
   addBuild,
+  runBuild,
+  endBuild,
 };

@@ -1,5 +1,6 @@
 const router = require("express").Router({ mergeParams: true });
 const { store, addBuild } = require("../../../redux");
+const { buildProject, triggerBuild } = require("../../../util/build");
 
 router.get("/", (req, res) => {
   const { projectId } = req.params;
@@ -18,7 +19,29 @@ router.get("/", (req, res) => {
   }
 });
 
+router.post("/run", (req, res) => {
+  const { projectId } = req.params;
+  const { buildNumber } = req.body;
+  let found = false;
+  store.getState().forEach((project) => {
+    if (project.id === projectId) {
+      project.build.forEach((build) => {
+        if (build.buildNumber === Number(buildNumber)) {
+          found = true;
+          buildProject(projectId, buildNumber);
+        }
+      });
+    }
+  });
+  if (found) {
+    res.status(201).json(store.getState());
+  } else {
+    res.status(418).json({ message: "Build not found" });
+  }
+});
+
 router.post("/", (req, res) => {
+  console.log("post is triggred");
   const { projectId } = req.params;
   const build = req.body;
   let found = false;

@@ -1,5 +1,6 @@
 const Promise = require("bluebird");
 const Queue = require("queue");
+const { store, runBuild, endBuild } = require("../redux");
 
 const queue = Queue();
 queue.autostart = true;
@@ -9,12 +10,25 @@ const buildProject = async (projectId, buildNumber) => {
   await Promise.delay(3000); // Please leave this in to simulate load
 
   // TODO Set build status to "Running" in app state!
+  store.getState().forEach((project) => {
+    if (project.id === projectId) {
+      if (project.build.length > 0) {
+        project.build.forEach((build) => {
+          if (buildNumber === build.buildNumber) {
+            store.dispatch(runBuild(projectId, buildNumber));
+          }
+        });
+      }
+    }
+  });
 
   // super complex build logic following, check out project, run yarn test etc etc
   await Promise.delay(3000); // Do not modify this timing
   const buildStatus = Math.random() > 0.5 ? "Failed" : "Success";
   const output = "Donezo!";
 
+  store.dispatch(endBuild(projectId, buildNumber, buildStatus, output));
+  return store.getStatus();
   // TODO Set build status and output in app state!
 };
 
@@ -27,4 +41,5 @@ const triggerBuild = async (projectId) => {
 
 module.exports = {
   triggerBuild,
+  buildProject,
 };
