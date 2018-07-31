@@ -2,6 +2,10 @@ const redux = require("redux");
 
 const initial = [];
 
+/////////////////////
+// PROJECT ACTIONS //
+/////////////////////
+
 const createProject = (project) => ({
   type: "CREATE_PROJECT",
   project,
@@ -17,6 +21,20 @@ const deleteProject = (projectId) => ({
   type: "DELETE_PROJECT",
   projectId,
 });
+
+/////////////////////
+/// BUILD ACTIONS ///
+/////////////////////
+
+const addBuild = (projectId, build) => ({
+  type: "ADD_BUILD",
+  projectId,
+  build,
+});
+
+/////////////////////
+///    REDUCER    ///
+/////////////////////
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
@@ -41,6 +59,17 @@ const reducer = (state = initial, action) => {
       });
       return clone;
     }
+
+    case "ADD_BUILD": {
+      const storeClone = [...state];
+      storeClone.forEach((project) => {
+        if (project.id === action.projectId) {
+          // Object.assign(project.build, action.build)
+          project.build.push(action.build);
+        }
+      });
+      return storeClone;
+    }
   }
   return state;
 };
@@ -52,4 +81,5 @@ module.exports = {
   createProject,
   patchProject,
   deleteProject,
+  addBuild,
 };
