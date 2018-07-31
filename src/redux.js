@@ -64,7 +64,6 @@ const reducer = (state = initial, action) => {
       const storeClone = [...state];
       storeClone.forEach((project) => {
         if (project.id === action.projectId) {
-          // Object.assign(project.build, action.build)
           project.build.push(action.build);
         }
       });
